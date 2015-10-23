@@ -12,7 +12,7 @@
 require "socket"
 require "openssl"
 
-remote_host = "www.google.com"
+remote_host = "192.168.1.1"
 remote_port = 443
 listen_port = 443
 max_threads = 5
@@ -24,6 +24,7 @@ key = File.expand_path("server.key")
 
 puts "starting server"
 server = TCPServer.new(nil, listen_port)
+
 lssl_context = OpenSSL::SSL::SSLContext.new(:TLSv1_server)
 lssl_context.cert = OpenSSL::X509::Certificate.new(File.open(cert))
 lssl_context.key = OpenSSL::PKey::RSA.new(File.open(key))
