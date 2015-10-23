@@ -1,5 +1,12 @@
 #!/usr/bin/env ruby
 
+# Notes for generating a self-signed cert (when offline)
+#openssl genrsa -des3 -out server.key 2048
+#openssl req -new -key server.key -out server.csr
+#cp server.key server.key.org
+#openssl rsa -in server.key.org -out server.key
+#openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+
 # Slightly mod'd version of joernchen's Simple SSL MITM logging proxy
 # Original here: https://github.com/joernchen/evil_stuff/blob/master/ruby/proxy-ssl.rb
 require "socket"
@@ -12,8 +19,8 @@ max_threads = 5
 threads = []
 logfilecs = "ssl-client-server.log" #logfiles will be prefixed with timestamp
 logfilesc = "ssl-server-client.log" #logfiles will be prefixed with timestamp
-cert = "/path/to/X509/server.crt"
-key = "/path/to/rsa/server.key"
+cert = File.expand_path("server.crt")
+key = File.expand_path("server.key")
 
 puts "starting server"
 server = TCPServer.new(nil, listen_port)
