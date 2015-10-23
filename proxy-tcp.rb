@@ -4,7 +4,7 @@
 # Original here: https://github.com/joernchen/evil_stuff/blob/master/ruby/proxy-ssl.rb
 require "socket"
 
-remote_host = "10.22.72.166"
+remote_host = "192.168.1.1"
 remote_port = 3389
 listen_port = 3389
 max_threads = 5
