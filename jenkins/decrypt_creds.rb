@@ -17,6 +17,10 @@ def decrypt(key, data)
   cipher.key = key
   cipher.padding = 0
   secret = cipher.update(data) << cipher.final
+  unless secret.include?("::::MAGIC::::")
+    raise StandardError, "Decryption failure"
+  end
+  secret
 end
 
 magic = "::::MAGIC::::"
