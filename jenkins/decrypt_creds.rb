@@ -1,3 +1,5 @@
+# -*- coding: binary -*-
+
 require 'digest/sha2'
 require 'openssl'
 
@@ -17,13 +19,20 @@ def decrypt(key, data)
   cipher.key = key
   cipher.padding = 0
   secret = cipher.update(data) << cipher.final
-  unless secret.include?("::::MAGIC::::")
-    raise StandardError, "Decryption failure"
-  end
+  # unless secret.include?("::::MAGIC::::")
+  #   raise StandardError, "Decryption failure"
+  # end
   secret
 end
 
-magic = "::::MAGIC::::"
+def hexify(s)
+  s.each_byte.map { |b| b.to_s(16) }.join
+end
+
+def unhexify(s)
+ s.scan(/../).map { |x| x.hex.chr }.join
+end
+
 encoded_encrypted_password = ARGV[0] || "2Alp+SzoZ9YDLjgUT8n6nkX9Xexa0MrYdFgi1dN3H5k="
 
 path = ARGV[1] || "example_keys/"
@@ -34,7 +43,6 @@ hashed_master_key = Digest::SHA256.digest(master_key)[0,16]
 
 puts "[+] Decrypting hudson.util.Secret w/ master.key"
 plaintext_hudson_secret = decrypt(hashed_master_key, hudson_util_secret)
-
 encrypted_password = encoded_encrypted_password.unpack('m')[0]
 
 puts "[+] Decrypting password w/ hudson.util.Secret"
