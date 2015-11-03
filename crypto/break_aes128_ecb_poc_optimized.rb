@@ -1,3 +1,4 @@
+
 require 'openssl'
 require 'base64'
 
@@ -7,14 +8,27 @@ require 'base64'
 @count = 0
 @encrypt_content = []
 
+# Break a string into block-sized strings
+def chunk(string, size)
+  (0..(string.length-1)/size).map{|i|string[i*size,size]}
+end
+
 def encrypt(key, data)
   @count += 1
   @encrypt_content << data
-  data = pkcs_pad(data, 16)
-  cipher = OpenSSL::Cipher::Cipher.new("aes-128-ecb")
-  cipher.encrypt
-  cipher.key = key
-  secret = cipher.update(data) << cipher.final
+  #data = pkcs_pad(data, 16)
+  # cipher = OpenSSL::Cipher::Cipher.new("aes-128-ecb")
+  # cipher.encrypt
+  # cipher.key = key
+  # secret = cipher.update(data) << cipher.final
+
+  aes = OpenSSL::Cipher::Cipher.new("AES-128-ECB")
+  aes.encrypt
+  aes.key = key
+  mes = aes.update(data)
+  mes << aes.final
+
+  mes
 end
 
 def decrypt(key, data)
@@ -42,10 +56,18 @@ dict = {}
 chars = Array(32..127)
 padding = ("A" * 15)
 
-chars.map { |char|
+test_blocks = chars.map {|char|
   blob = padding.dup
   blob << char.chr
-  dict[encrypt(key, blob)[0,16]] = char.chr
+  blob
+}
+
+magic_string = test_blocks.join("")
+encrypted_magic_string = encrypt(key, magic_string)
+encrypted_magic_array = chunk(encrypted_magic_string, 16)
+
+chars.each_with_index {|char, i|
+  dict[encrypted_magic_array[i]] = char.chr
 }
 
 plain_text_string = ""
