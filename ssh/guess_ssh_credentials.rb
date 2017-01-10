@@ -46,6 +46,8 @@ services.each do |service|
       break
     rescue Net::SSH::AuthenticationFailed,Net::SSH::Disconnect
       # this is ok, failure to auth is ideal in this context
+    rescue
+      #nop
     end
   end
 end
