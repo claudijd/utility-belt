@@ -39,8 +39,7 @@ services.each do |service|
               :number_of_password_prompts => 0,
               :timeout => 3,
               :paranoid => Net::SSH::Verifiers::Null.new, #avoid host-key mismatch issues due to duplicate keys
-              :auth_methods => [ 'password' ],
-              :number_of_password_prompts => 0)
+              :auth_methods => [ 'password' ]
             )
       ssh.close
       guessable_credentials << {:ip => service[:ip], :port => service[:port], :username => credentials[:username], :password => credentials[:password]} 
