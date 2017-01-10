@@ -50,4 +50,11 @@ services.each do |service|
   end
 end
 
-puts JSON.pretty_generate(guessable_credentials)
+if guessable_credentials.empty?
+  puts "No guessable credentials detected"
+  exit 0
+else
+  puts "Guessable credentials detected"
+  puts JSON.pretty_generate(guessable_credentials)
+  exit 1
+end
