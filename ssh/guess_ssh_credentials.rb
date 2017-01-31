@@ -16,11 +16,13 @@ end
 
 # Get the services we want to perform SSH guessing for
 services = []
-Nmap::XML.new("scan.xml") do |xml|
-  xml.each_up_host do |host|
-    host.open_ports.each do |port|
-      next if port.to_i != 22
-      services << {:ip => host.ip, :port => port.to_i}
+Dir.glob("scan*.xml").each do |file|
+  Nmap::XML.new(file) do |xml|
+    xml.each_up_host do |host|
+      host.open_ports.each do |port|
+        next if port.to_i != 22
+        services << {:ip => host.ip, :port => port.to_i}
+      end
     end
   end
 end
@@ -38,9 +40,8 @@ services.each do |service|
               :password => credentials[:password],
               :number_of_password_prompts => 0,
               :timeout => 3,
-              :paranoid => Net::SSH::Verifiers::Null.new #avoid host-key mismatch issues due to duplicate keys
-              :auth_methods => [ 'password' ],
-              :number_of_password_prompts => 0)
+              :paranoid => Net::SSH::Verifiers::Null.new, #avoid host-key mismatch issues due to duplicate keys
+              :auth_methods => [ 'password' ]
             )
       ssh.close
       guessable_credentials << {:ip => service[:ip], :port => service[:port], :username => credentials[:username], :password => credentials[:password]} 
@@ -62,3 +63,4 @@ else
   puts JSON.pretty_generate(guessable_credentials)
   exit 1
 end
+
