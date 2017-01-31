@@ -10,7 +10,7 @@ if ENV['SSH_GUESS_CREDENTIALS']
     credentials << {:username => user, :password => pass}
   end
 else
-:  warn "Environment variable SSH_GUESS_CREDENTIALS not defined, exiting..."
+  warn "Environment variable SSH_GUESS_CREDENTIALS not defined, exiting..."
   exit 1
 end
 
